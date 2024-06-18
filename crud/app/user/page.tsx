@@ -4,8 +4,9 @@ import useGraphQL, { User } from "./hook";
 import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import UserForm from './_components/form';
+import isAuth from '@/components/isAuth';
 
-export default function Home() {
+function Home() {
   const [isOpen, setOpen] = useState(false)
   const [isOpenAdd, setOpenAdd] = useState(false)
   const { users, userData, setUserData, removeUser, getUsers } = useGraphQL()
@@ -106,3 +107,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default isAuth(Home)
