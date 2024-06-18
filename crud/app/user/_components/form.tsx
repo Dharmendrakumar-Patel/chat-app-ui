@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import useGraphQL, { User } from '../hook';
+import useGraphQL, { CreateUserInput, UpdateUserInput, User } from '../hook';
 import { DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -39,11 +39,19 @@ export default function UserForm({ data, action = 'edit', close }: UserFormProps
         
         try {
             if (action !== 'edit') {
-                await createUser(formData as User);
+                await createUser(formData as CreateUserInput);
             } else {
-                await updateUser(formData?._id as string, formData as User);
+                await updateUser(formData?._id as string, formData as UpdateUserInput);
             }
 
+            setFormData({
+                _id: '',
+                firstname: '',
+                lastname: '',
+                email: '',
+                password: '',
+            })
+            
             close()
         } catch (error) {
             console.error('Error:', error);

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { gql } from "@apollo/client";
-import createApolloClient from "../apollo-client";
+import createApolloClient from "../../apollo-client";
 
 export type User = {
     _id?: string;
@@ -11,7 +11,7 @@ export type User = {
     password: string;
 };
 
-type CreateUserInput = {
+export type CreateUserInput = {
     _id?: string;
     firstname: string;
     lastname: string;
@@ -19,7 +19,7 @@ type CreateUserInput = {
     password: string;
 };
 
-type UpdateUserInput = {
+export type UpdateUserInput = {
     _id: string;
     firstname?: string;
     lastname?: string;
@@ -48,7 +48,7 @@ const REMOVE_USER = gql`
 
 const CREATE_USER = gql`
   mutation CreateUser($createUserInput: CreateUserInput!) {
-    createUser(createUserInput: $createUserInput) {
+    signUp (createUserInput: $createUserInput) {
         _id
         firstname
         lastname
@@ -113,7 +113,7 @@ export default function useGraphQL() {
         }
     };
 
-    const updateUser = async (id: string | undefined, data: Partial<User>) => {
+    const updateUser = async (id: string | undefined, data: UpdateUserInput) => {
         try {
             await client.mutate({
                 mutation: UPDATE_USER,
