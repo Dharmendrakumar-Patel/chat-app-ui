@@ -5,27 +5,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useAppDispatch, useAppSelector } from '@/lib/store/hook';
-import { authUser, selectUser } from "@/lib/store/features/user/userSlice";
+import { useAppDispatch } from '@/lib/store/hook';
+import { authUser } from "@/lib/store/features/user/userSlice";
 import useGraphQLAuth from "./hook"; // Adjust the import as per your hook implementation
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getCookie } from "../action";
 
 export default function Login() {
     const { toast } = useToast();
     const { loginUser } = useGraphQLAuth();
     const dispatch = useAppDispatch();
-    const user = useAppSelector(selectUser)
     const router = useRouter()
 
-    const [userId, setuserId] = useState<string>("")
+    const [user, setuser] = useState<string>("")
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({ email: "", password: '' });
 
+    const cookie = async () => {
+        return await getCookie('chatApp');
+    }
+    
     useEffect(() => {
-        dispatch(authUser(userId));
-        router.push('/user')
-    }, [userId, router])
+        cookie().then((res: any) => res !== undefined && router.push('/user'))
+    }, [])
+
+    useEffect(() => {
+        dispatch(authUser(user));
+    }, [user, router])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -45,7 +52,7 @@ export default function Login() {
                     description: "Invalid Email Or Password",
                 });
             } else {
-                setuserId(userData._id)
+                setuser(userData)
                 router.push("/user")
             }
         } catch (error) {

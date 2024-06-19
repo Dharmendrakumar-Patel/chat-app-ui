@@ -1,5 +1,4 @@
 'use client'
-import { useState } from 'react'
 import { gql } from "@apollo/client";
 import createApolloClient from "../../apollo-client";
 
@@ -17,6 +16,15 @@ export type LoginUserInput = {
     lastname?: string;
     email: string;
     password: string;
+    token?: string
+};
+
+export type SignupUserInput = {
+    _id?: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    password: string;
 };
 
 const LOGIN_USER = gql`
@@ -26,6 +34,18 @@ const LOGIN_USER = gql`
         email
         firstname
         lastname
+        token
+    }
+  }
+`;
+
+const SIGNUP_USER = gql`
+  mutation CreateUser($createUserInput: SignupUserInput!) {
+    signUp (createUserInput: $createUserInput) {
+        _id
+        firstname
+        lastname
+        email
     }
   }
 `;

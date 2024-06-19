@@ -4,15 +4,25 @@ import useGraphQL, { User } from "./hook";
 import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import UserForm from './_components/form';
-import isAuth from '@/components/isAuth';
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast";
+import { getCookie } from '../action';
+import { useRouter } from 'next/navigation';
 
 function Home() {
   const { toast } = useToast();
   const [isOpen, setOpen] = useState(false)
   const [isOpenAdd, setOpenAdd] = useState(false)
   const { users, userData, setUserData, removeUser, getUsers } = useGraphQL()
+  const router = useRouter()
+
+  const cookie = async () => {
+    return await getCookie('chatApp');
+  }
+
+  useEffect(() => {
+      cookie().then((res: any) => res !== undefined && router.push('/login'))
+  }, [])
 
   useEffect(() => {
     getUsers()
@@ -117,4 +127,4 @@ function Home() {
   );
 }
 
-export default isAuth(Home)
+export default Home
