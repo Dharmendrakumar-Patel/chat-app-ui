@@ -5,8 +5,11 @@ import { Dialog } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import UserForm from './_components/form';
 import isAuth from '@/components/isAuth';
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/components/ui/use-toast";
 
 function Home() {
+  const { toast } = useToast();
   const [isOpen, setOpen] = useState(false)
   const [isOpenAdd, setOpenAdd] = useState(false)
   const { users, userData, setUserData, removeUser, getUsers } = useGraphQL()
@@ -16,7 +19,12 @@ function Home() {
   }, [])
 
   const handleDelete = (id: string | undefined) => {
-    removeUser(id)
+    try {
+      const message = removeUser(id)
+      toast({ description: message })
+    } catch (err) {
+      toast({ description: JSON.stringify(err) })
+    }
   }
 
   const handleCloseEdit = async () => {
@@ -41,6 +49,7 @@ function Home() {
 
   return (
     <main className="flex min-h-screen w-screen flex-col p-12">
+      <Toaster />
       <div className='flex items-center justify-between'>
         <h1 className="w-full text-2xl text-center font-semibold">User Data</h1>
         <Button onClick={() => handleCreate()}>

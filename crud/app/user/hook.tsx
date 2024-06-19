@@ -9,9 +9,10 @@ export type User = {
     lastname: string;
     email: string;
     password: string;
+    token?: string
 };
 
-export type CreateUserInput = {
+export type SignupUserInput = {
     _id?: string;
     firstname: string;
     lastname: string;
@@ -40,14 +41,12 @@ const GET_USERS = gql`
 
 const REMOVE_USER = gql`
   mutation RemoveUser($_id: String!) {
-    deleteUser(_id: $_id) {
-      _id
-    }
+    deleteUser(_id: $_id)
   }
 `;
 
 const CREATE_USER = gql`
-  mutation CreateUser($createUserInput: CreateUserInput!) {
+  mutation CreateUser($createUserInput: SignupUserInput!) {
     signUp (createUserInput: $createUserInput) {
         _id
         firstname
@@ -87,20 +86,20 @@ export default function useGraphQL() {
 
     const removeUser = async (id: string | undefined) => {
         try {
-            await client.mutate({
+            const user = await client.mutate({
                 mutation: REMOVE_USER,
                 variables: { _id: id }
             });
 
             getUsers()
 
-            return
+            return user.data.deleteUser
         } catch (error) {
             console.error('Error removing user:', error);
         }
     };
 
-    const createUser = async (data: CreateUserInput) => {
+    const createUser = async (data: SignupUserInput) => {
         try {
             await client.mutate({
                 mutation: CREATE_USER,

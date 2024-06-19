@@ -11,7 +11,7 @@ export type User = {
     password: string;
 };
 
-export type LoginInput = {
+export type LoginUserInput = {
     _id?: string;
     firstname?: string;
     lastname?: string;
@@ -20,7 +20,7 @@ export type LoginInput = {
 };
 
 const LOGIN_USER = gql`
-  mutation LoginUser($login: LoginInput!) {
+  mutation LoginUser($login: LoginUserInput!) {
     login (login: $login) {
         _id
         email
@@ -33,7 +33,7 @@ const LOGIN_USER = gql`
 export default function useGraphQLAuth() {
     const client = createApolloClient()
 
-    const loginUser = async (loginData: LoginInput) => {
+    const loginUser = async (loginData: LoginUserInput) => {
         try {
             const { data } = await client.mutate({
                 mutation: LOGIN_USER,
